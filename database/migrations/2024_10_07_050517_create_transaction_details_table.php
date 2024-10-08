@@ -18,7 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('package_id');
             $table->foreign('package_id')->references('id')->on('packages');
             $table->integer('quantity');
-            $table->string('description');
+            $table->text('description');
+            $table->integer('subtotal');
             $table->timestamps();
         });
     }

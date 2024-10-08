@@ -9,7 +9,7 @@ use App\Http\Controllers\AdminController;
 Route::get('/', [HomeController::class, 'home']);
 
 Route::get('/dashboard', function () {
-    return view('welcome');
+    return view('admin.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -20,7 +20,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-route::get('admin/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'admin']);
+Route::get('admin/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'admin']);
 
 route::get('outlet', [AdminController::class, 'outlet'])->middleware(['auth', 'admin']);
 route::get('delete_outlet/{id}', [AdminController::class, 'delete_outlet'])->middleware(['auth', 'admin']);
@@ -52,9 +52,13 @@ Route::get('delete_manage_order/{id}', [AdminController::class, 'delete_manage_o
 Route::post('add_manage_order', [AdminController::class, 'add_manage_order'])->middleware(['auth', 'admin']);
 Route::post('update_manage_order', [AdminController::class, 'update_manage_order'])->middleware(['auth', 'admin']);
 
+Route::get('report', [AdminController::class, 'report'])->middleware(['auth', 'admin']);
+
 // Route::get('/get_user/{id}', 'AdminController@getUser');
 Route::get('get_user/{id}', [AdminController::class, 'get_user'])->middleware(['auth', 'admin']);
+Route::get('get_report', [AdminController::class, 'get_report'])->middleware(['auth', 'admin']);
 Route::get('get_outlet/{id}', [AdminController::class, 'get_outlet'])->middleware(['auth', 'admin']);
 Route::get('get_package/{id}', [AdminController::class, 'get_package'])->middleware(['auth', 'admin']);
 Route::get('get_member/{id}', [AdminController::class, 'get_member'])->middleware(['auth', 'admin']);
 Route::get('get_transaction_detail/{id}', [AdminController::class, 'get_transaction_detail'])->middleware(['auth', 'admin']);
+Route::post('update_status', [AdminController::class, 'update_status'])->middleware(['auth', 'admin']);

@@ -1,50 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Packages - CleanLook</title>
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
-<body>
-    @include('admin.sidebar')
-
-    <div class="p-4 sm:ml-64">
-        <div class="m-0 p-0">
-            <h4>Packages</h4>
-        </div>
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Packages</button>
-        </div>
-        <div class="card px-3 py-1 table-responsive text-nowrap mt-3">
-            <table class="table table-hover">
-                <thead>
+<x-layout title="Packages - CleanLook">
+    <div class="m-0 p-0">
+        <h4>Packages</h4>
+    </div>
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Packages</button>
+    </div>
+    <div class="card px-3 py-1 table-responsive text-nowrap mt-3">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">OUTLET</th>
+                    <th scope="col">TYPE</th>
+                    <th scope="col">PACKAGE NAME</th>
+                    <th scope="col">PRICE</th>
+                    <th scope="col" class="text-center">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($datas as $data)
                     <tr>
-                        <th scope="col">OUTLET</th>
-                        <th scope="col">TYPE</th>
-                        <th scope="col">PACKAGE NAME</th>
-                        <th scope="col">PRICE</th>
-                        <th scope="col" class="text-center">ACTION</th>
+                        <td>{{ $data->outlet->name ?? 'N/A' }}</td>
+                        <td>{{ $data->type }}</td>
+                        <td>{{ $data->package_name }}</td>
+                        <td>{{ $data->price }}</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="{{ $data->id }}" data-bs-toggle="modal" data-bs-target="#modalEdit">Edit</button>
+                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="{{ $data->id }}">Delete</button>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach ($datas as $data)
-                        <tr>
-                            <td>{{ $data->outlet->name ?? 'N/A' }}</td>
-                            <td>{{ $data->type }}</td>
-                            <td>{{ $data->package_name }}</td>
-                            <td>{{ $data->price }}</td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="{{ $data->id }}" data-bs-toggle="modal" data-bs-target="#modalEdit">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="{{ $data->id }}">Delete</button>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 
     <!-- Modal Add -->
@@ -144,7 +130,6 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('#modalAdd').on('hidden.bs.modal', function () {
@@ -213,9 +198,6 @@
         });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     @if(session('success'))
         <script type="text/javascript">
             Swal.fire({
@@ -227,5 +209,4 @@
             });
         </script>
     @endif
-</body>
-</html>
+</x-layout>

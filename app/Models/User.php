@@ -49,7 +49,7 @@ class User extends Authenticatable
     }
 
     const STATUS_ADMIN = 'admin';
-    const STATUS_CASHIER = 'chasier';
+    const STATUS_CASHIER = 'cashier';
     const STATUS_OWNER = 'owner';
 
     public static function getStatuses() {

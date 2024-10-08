@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('outlet_id');
             $table->foreign('outlet_id')->references('id')->on('outlets');
-            $table->string('type');
-            $table->string('package_name');
-            $table->decimal('price');
+            $table->string('type', 55);
+            $table->string('package_name', 100);
+            $table->integer('price');
             $table->timestamps();
         });
     }

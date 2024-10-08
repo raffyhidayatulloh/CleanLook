@@ -169,43 +169,58 @@ class AdminController extends Controller
     }
 
     public function get_transaction_detail($id) {
-        $transactionDetails = TransactionDetail::with('package')->find($id);
-        if (!$transactionDetails) {
+        $transactionDetails = TransactionDetail::with('package')->where('transaction_id', $id)->get();
+        if ($transactionDetails->isEmpty()) {
             return response()->json(['message' => 'Transaction detail not found'], 404);
         }
+        $details = [];
+        foreach ($transactionDetails as $detail) {
+            $details[] = [
+                'package_name' => $detail->package->package_name,
+                'quantity' => $detail->quantity,
+                'description' => $detail->description,
+            ];
+        }
+
+        // Mengembalikan respon JSON
         return response()->json([
-            'id' => $transactionDetails->id,
-            'package_name' => $transactionDetails->package->package_name,
-            'quantity' => $transactionDetails->quantity,
-            'description' => $transactionDetails->description
+            'id' => $id, // Mengembalikan ID transaksi
+            'details' => $details, // Mengembalikan semua detail transaksi
         ]);
     }
 
     public function add_transaction(Request $request) {
-        $invoiceCode = $this->generateInvoiceCode();
-
         $transaction = new Transaction;
         $transaction->outlet_id = $request->outlet_id;
         $transaction->member_id = $request->member_id;
-        $transaction->invoice_code = $invoiceCode;
+        $transaction->invoice_code = $this->generateInvoiceCode();
         $transaction->date = now();
         $transaction->deadline = $request->deadline;
         $transaction->payment_date = $request->payment_date;
+        $transaction->payment_status = $request->payment_status;
         $transaction->extra_charge = $request->extra_charge;
         $transaction->discount = $request->discount;
         $transaction->tax = $request->tax;
         $transaction->status = 'new';
+        $transaction->total_amount = 0;
         $transaction->user_id = $request->user_id;
         $transaction->save();
     
+        $totalSubtotal = 0;
         foreach ($request->package_id as $index => $packageId) {
+            $package = Package::find($packageId);
             $transactionDetail = new TransactionDetail;
             $transactionDetail->transaction_id = $transaction->id;
             $transactionDetail->package_id = $packageId;
             $transactionDetail->quantity = $request->quantity[$index];
             $transactionDetail->description = $request->description[$index];
+            $transactionDetail->subtotal = $package->price * $request->quantity[$index];
             $transactionDetail->save();
+            $totalSubtotal += $transactionDetail->subtotal;
         }
+
+        $transaction->total_amount = $totalSubtotal + $transaction->extra_charge + $transaction->tax - $transaction->discount;
+        $transaction->save();
         return redirect()->back();
     }
 
@@ -246,5 +261,32 @@ class AdminController extends Controller
         $data->telp = $request->telp;
         $data->save();
         return redirect('/member');
+    }
+
+    public function update_status(Request $request) {
+        $request->validate([
+            'id' => 'required|exists:transactions,id',
+            'status' => 'required|string',
+        ]);
+
+        $transaction = Transaction::find($request->id);
+
+        $transaction->status = $request->status;
+        $transaction->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function report() {
+        $datas = Outlet::all();
+        return view('admin.report', compact('datas'));
+    }
+
+    public function get_report(Request $request) {
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+
+        $transactions = Transaction::whereBetween('date', [$fromDate, $toDate])->get();
+        return response()->json($transactions);
     }
 }
