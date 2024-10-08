@@ -1,10 +1,6 @@
-@font-face {
-    font-family: 'Poppins';
-    src: url('/public/fonts/Poppins-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+.custom-swal-popup {
+    z-index: 9999 !important;
 }
-
-html, body {
-    font-family: 'Poppins', sans-serif;
+.swal2-container {
+    z-index: 9999 !important;
 }
