@@ -22,6 +22,7 @@ class User extends Authenticatable
         'role',
         'email',
         'password',
+        'outlet_id',
     ];
 
     /**
@@ -44,6 +45,18 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+        ];
+    }
+
+    const STATUS_ADMIN = 'admin';
+    const STATUS_CASHIER = 'chasier';
+    const STATUS_OWNER = 'owner';
+
+    public static function getStatuses() {
+        return [
+            self::STATUS_ADMIN => 'Admin',
+            self::STATUS_CASHIER => 'Cashier',
+            self::STATUS_OWNER => 'Owner',
         ];
     }
 }

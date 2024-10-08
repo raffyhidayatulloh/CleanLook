@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->unsignedBigInteger('outlet_id');
+            $table->foreign('outlet_id')->references('id')->on('outlets');
             $table->rememberToken();
             $table->timestamps();
         });
